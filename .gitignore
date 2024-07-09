@@ -9,3 +9,4 @@ package-lock.json
 **/*.pyc
 **/*.pyo
 **/migrations
+.env
