@@ -5,8 +5,8 @@ from information.models import Student, Subject
 # Create your models here.
 class Result(models.Model):
     exam_type = models.CharField(max_length=10, default='Pretest')
-    # student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    # subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
     cq = models.IntegerField(default=0)
     mcq = models.IntegerField(default=0)
     practical = models.IntegerField(default=0)
