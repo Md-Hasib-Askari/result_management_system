@@ -1,0 +1,11 @@
+/node_modules
+/dist
+/.vscode
+/venv
+/staticfiles
+.prettierrc
+package-lock.json
+**/__pycache__
+**/*.pyc
+**/*.pyo
+**/migrations

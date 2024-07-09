@@ -1,0 +1,11 @@
+<div class="my-5 p-4 border-s-4 {% if message.error %}border-red-500 dark:bg-red-800/30 bg-red-50{% elif message.success %}border-green-500 bg-green-50 dark:bg-green-800/30{% endif %}" role="alert">
+    <div class="ms-3">
+        <p class="text-sm text-gray-700 dark:text-neutral-400">
+            {% if message.error %}
+                {{ message.error }}
+            {% else %}
+                {{ message.success }}
+            {% endif %}
+        </p>
+    </div>
+</div>

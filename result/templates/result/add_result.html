@@ -1,0 +1,115 @@
+{% extends "result/_base.html" %}
+
+{% block title %}Add Student Marks{% endblock title %}
+
+{% block content %}
+<div class="max-w-screen-xl mx-auto p-5">
+    <h2 class="text-xl font-black mb-2">Search Student</h2>
+    <form method="get" class="flex gap-4 border p-5">
+        {% csrf_token %}
+        <label for="roll">Roll</label>
+        <input type="text" name="roll" id="roll" class="mr-4 border-2 rounded-md" required>
+        <label for="section">Section</label>
+        <select name="section" id="section" class="p-2 rounded-md bg-slate-400">
+            <option value="A">A</option>
+            <option value="B">B</option>
+        </select>
+        <button type="submit" class="py-2 px-5 text-gray-100 bg-green-600 rounded-md">Search</button>
+    </form>
+
+    {% if student %}
+        <h3 class="text-xl font-black mt-4 mb-2">Search Results</h3>
+        <table class="bg-green-100 rounded-md min-w-full divide-y divide-green-200 mb-5">
+            <thead>
+              <tr>
+                <th scope="col" class="px-6 py-3 text-start text-xs font-semibold text-gray-500 uppercase dark:text-neutral-500">Name</th>
+                <th scope="col" class="px-6 py-3 text-start text-xs font-semibold text-gray-500 uppercase dark:text-neutral-500">Roll</th>
+                <th scope="col" class="px-6 py-3 text-start text-xs font-semibold text-gray-500 uppercase dark:text-neutral-500">Class</th>
+                <th scope="col" class="px-6 py-3 text-start text-xs font-semibold text-gray-500 uppercase dark:text-neutral-500">Section</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-neutral-200">{{ student.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-neutral-200">{{ student.roll }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-neutral-200">{{ student.student_class }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-neutral-200">{{ student.section }}</td>
+              </tr>
+            </tbody>
+          </table>
+    {% elif message %}
+          {% include "result/error.html" %}
+    {% endif %}
+
+    {% if subjects %}
+    <form method="post">
+        {% csrf_token %}
+        <fieldset class="p-5 mb-5 bg-red-100 rounded-md">
+            <label for="exam_type" class="font-semibold">Exam Type: </label>
+            <select class="p-2 w-40 bg-gray-300 rounded-md" name="exam_type" id="exam_type">
+                <option value="Pretest">Pretest</option>
+                <option value="Test">Test</option>
+            </select>
+        </fieldset>
+        <input type="hidden" name="student" value="{{ student.id }}">
+        <div class="flex flex-wrap gap-5 justify-between w-full">
+            {% for subject_name, subject_result in subject_wise_result.items %}
+                <input type="hidden" name="subject" value="{{ subject_result.subject.id }}">
+                <fieldset class="p-5 bg-red-100 rounded-md">
+                    <legend class="font-semibold px-2">{{ subject_result.subject.name }}</legend>
+                    <div class="flex flex-wrap gap-4 justify-evenly">
+                        <div class="flex gap-2">
+                            <label for="mcq-{{ forloop.counter }}">MCQ</label>
+                            <input 
+                                type="text" 
+                                name="mcq" 
+                                id="mcq-{{ forloop.counter }}" 
+                                class="border-2 rounded-md max-w-20" 
+                                {% if subject_result.result.mcq %}value={{ subject_result.result.mcq }}{% endif %}
+                                required>
+                        </div>
+                        <div class="flex gap-2">
+                            <label for="cq-{{ forloop.counter }}">CQ</label>
+                            <input 
+                                type="text" 
+                                name="cq" 
+                                id="cq-{{ forloop.counter }}" 
+                                class="border-2 rounded-md max-w-20" 
+                                {% if subject_result.result.cq %}value={{ subject_result.result.cq }}{% endif %}
+                                required>
+                        </div>
+                        <div class="flex gap-2">
+                            <label for="practical-{{ forloop.counter }}">Practical</label>
+                            <input 
+                                type="text" 
+                                name="practical" 
+                                id="practical-{{ forloop.counter }}" 
+                                class="border-2 rounded-md max-w-20" 
+                                {% if subject_result.result.practical %}value={{ subject_result.result.practical }}{% endif %}
+                                >
+                        </div>
+                        <div class="flex gap-2">
+                            <label for="project-{{ forloop.counter }}">Project</label>
+                            <input 
+                                type="text" 
+                                name="project" 
+                                id="project-{{ forloop.counter }}" 
+                                class="border-2 rounded-md max-w-20" 
+                                {% if subject_result.result.project %}value={{ subject_result.result.project }}{% endif %}
+                                >
+                        </div>
+                    </div>
+                </fieldset>
+            {% endfor %}
+        </div>
+        <button type="submit" class="mt-5 py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-teal-500 text-white hover:bg-teal-600 disabled:opacity-50 disabled:pointer-events-none">
+            Add Result
+        </button>
+    </form>
+        {% if message %}
+        {% include "result/error.html" %}
+        {% endif %}
+    {% endif %}
+    
+</div>
+{% endblock content %}

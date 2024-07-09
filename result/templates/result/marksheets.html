@@ -1,0 +1,161 @@
+{% extends "result/_base.html" %}
+
+{% block title %}Student Marksheet{% endblock title %}
+
+{% block content %}
+
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid rgb(171, 171, 171);
+        padding: 4px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+    @media print {
+        .report-card {
+            page-break-before: always;
+            width: 210mm;
+            height: 297mm;
+        }
+    }
+
+    .report-card {
+        margin: 20px;
+        padding: 20px;
+        border: 1px solid #000;
+    }
+</style>
+<div class="max-w-screen-lg mx-auto p-5">
+    <div class="w-full flex justify-end">
+        <button class="p-3 bg-blue-700 text-white text-right font-semibold rounded-md no-print" onclick="window.print()">Print Marksheets</button>
+    </div>
+    {% for report in  reports %}
+    <div id="print-area" class="report-card">
+        <header class="text-center mb-4">
+            <h3 class="text-4xl font-black mb-3">Rasulpur High School</h3>
+            <p class="text-sm mb-3">Panchabati, Narsingdi Sadar, Narsingdi</p>
+            <p class="text-2xl font-semibold">Mark Sheet</p>
+        </header>
+        <table class="w-full shadow-lg px-2 border-b-2 border-green-600">
+            <thead>
+                <tr>
+                    <th colspan="4" class="bg-green-600 text-white">Student Information Summary</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Roll No</td>
+                    <td colspan="3">{{ report.student.roll }}</td>
+                </tr>
+                <tr>
+                    <td>Name of Student</td>
+                    <td class="uppercase" colspan="3">{{ report.student.name }}</td>
+                </tr>
+                <tr>
+                    <td>Father's Name</td>
+                    <td class="uppercase" colspan="3">{{ report.student.father_name }}</td>
+                </tr>
+                <tr>
+                    <td>Mother's Name</td>
+                    <td class="uppercase" colspan="3">{{ report.student.mother_name }}</td>
+                </tr>
+                <tr>
+                    <td>Class</td>
+                    <td>{{ report.student.student_class.name }}</td>
+                    <td>Section</td>
+                    <td>{{ report.student.section.name }}</td>
+                </tr>
+                <tr>
+                    <td>Group</td>
+                    <td class="uppercase">{{ report.student.group }}</td>
+                    <td>Gender</td>
+                    <td class="uppercase">{{ report.student.gender }}</td>
+                </tr>
+                <tr>
+                    <td>Result</td>
+                    <td>GPA={{ report.final_gpa }}</td>
+                    <td>Date of Birth</td>
+                    <td>{{ report.student.dob }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="mt-5 mb-3">
+            <div class="alert alert-info text-center" id="err_msg" style="display:none"></div>
+            <div class="text-center text-xl font-semibold mb-2">
+                <h4>Subject-wise Grade/Marks</h4>
+            </div>
+            <table class="w-full shadow-lg p-2 border-b-2 border-green-600 text-center">
+                <thead>
+                    <tr>
+                        <th class="py-1 bg-green-600 text-white">Subject Name</th>
+                        <th class="py-1 bg-green-600 text-white">Mark</th>
+                        <th class="py-1 bg-green-600 text-white">Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mark in report.marks  %}
+                    <tr>
+                        <td>{{ mark.subject.name }}</td>
+                        <td><span>{{ mark.obtained_mark }}</span></td>
+                        <td class="cent-align">{{ mark.grade }}</td>
+                    </tr>
+                    {% endfor %}                                
+                </tbody>
+            </table>
+            <div class="text-center text-xl font-semibold mt-5 mb-2">
+                <h4>Subject-Wise Grade/Marks for Continuous Assessment</h4>
+            </div>
+            <table class="w-full shadow-lg p-2 border-b-2 border-green-600 text-center">
+                <thead>
+                    <tr>
+                        <th class="py-1 bg-green-600 text-white">Subject Name</th>
+                        <th class="py-1 bg-green-600 text-white">Mark</th>
+                        <th class="py-1 bg-green-600 text-white">Grade</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mark in report.assessment_mark  %}
+                    <tr>
+                        <td class="cent-align">{{ mark.subject.name }}</td>
+                        <td><span class="code_101">{{ mark.obtained_mark }}</span></td>
+                        <td class="cent-align">{{ mark.grade }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="flex justify-between items-end mt-36">
+            <div class="text-center">
+                <p>Guardian Signature</p>
+            </div>
+            <div class="text-center">
+                <p>Teacher's Signature</p>
+            </div>
+            <div class="text-center">
+                <p>Principal's Signature</p>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <script>
+        function print_area() {
+            let header_str = '<html><head><title>' + document.title  + '</title></head><body>';
+            let footer_str = '</body></html>';
+            let new_str = document.getElementById('print-area').innerHTML;
+            let old_str = document.body.innerHTML;
+            document.body.innerHTML = header_str + new_str + footer_str;
+            window.print();
+            document.body.innerHTML = old_str;
+            return false;
+        }
+    </script>
+</div>
+{% endblock content %}

@@ -1,0 +1,82 @@
+{% extends "result/_base.html" %}
+
+{% block title %}All Results{% endblock title %}
+
+{% block content %}
+<div class="p-5 max-w-screen-xl mx-auto">
+    
+    <h2 class="text-xl font-black mb-2">All Results</h2>
+    
+    <form method="get" class="flex flex-row gap-5 items-center">
+        {% csrf_token %}
+        <div class="">
+            <label for="section">Section</label>
+            <select class="p-2 rounded-md" name="section" id="section">
+                <option value="A">A</option>
+                <option value="B">B</option>
+            </select>
+        </div>
+        <div class="">
+            <label for="exam_type">Exam Type</label>
+            <select class="p-2 rounded-md" name="exam_type" id="exam_type">
+                <option value="Pretest">Pretest</option>
+                <option value="Test">Test</option>
+            </select>
+        </div>
+        <button type="submit" class="py-3 px-4 inline-flex items-center gap-x-2 text-sm font-semibold rounded-lg border border-transparent bg-green-800 text-green-100 hover:bg-green-700 disabled:opacity-50 disabled:pointer-events-none">
+            Search
+        </button>
+    </form>
+    <div class="w-full flex justify-end gap-4">
+        <a href="{% url "generate_report" "A" %}" class="p-3 bg-blue-700 text-white text-right font-semibold rounded-md no-print">Print Marksheets - A</a>
+        <a href="{% url "generate_report" "B" %}" class="p-3 bg-blue-700 text-white text-right font-semibold rounded-md no-print">Print Marksheets - B</a>
+    </div>
+
+    {% if students %}
+        <h3 class="text-xl font-black my-2">Search Results</h3>
+        <style>
+            td, th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+        </style>
+        <table class="bg-gray-100 rounded-md min-w-full divide-y border mb-5">
+            <thead>
+                <tr class="border-b">
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-semibold text-gray-500 uppercase dark:text-neutral-500">Roll</th>
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-semibold text-gray-500 uppercase dark:text-neutral-500">Name</th>
+                    <th scope="col" class="px-6 py-3 text-start text-xs font-semibold text-gray-500 uppercase dark:text-neutral-500">Marksheet</th>
+                    {% comment %} {% for subject in subjects %}
+                        <th colspan=4 scope="col" class="px-6 py-3 text-start text-xs font-semibold text-gray-500 uppercase dark:text-neutral-500">{{ subject.name }}</th>
+                    {% endfor %} {% endcomment %}
+                </tr>
+                
+            </thead>
+            <tbody class="divide-y divide-gray-200 dark:divide-neutral-700">
+                {% for student in students %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">{{ student.roll }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">{{ student.name }}</td>
+                        <td class="p-2 text-sm rounded-md font-semibold text-red-800 dark:text-neutral-200"><a href="{% url 'student_marksheet' student.id %}">View Marksheet</a></td>
+                        {% comment %} {% for result in results %}
+                            {% if result.student.id == student.id %}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">{{ result.cq }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">{{ result.mcq }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">{{ result.practical }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">{{ result.project }}</td>
+                            {% else %}
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            {% endif %}
+                        {% endfor %} {% endcomment %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% elif message %}
+    {% include "result/error.html" %}
+    {% endif %}
+</div>
+{% endblock content %}
