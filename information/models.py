@@ -45,6 +45,10 @@ class Student(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        verbose_name_plural = "Students"
+        unique_together = ('roll', 'student_class', 'section')
+
     def __str__(self):
         return self.name
     
